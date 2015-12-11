@@ -115,8 +115,8 @@ if __name__ == '__main__':
     except OSError:
         pass
 
-    for id in lines:
+    for idx, id in enumerate(lines):
         outfile = os.path.join(data_dir, id + '.wav')
         if not os.path.exists(outfile):
-            print id, lines[id]
+            print '[%s %s/%s]> %s' % (id, idx, len(lines), lines[id])
             record_to_file(outfile)
