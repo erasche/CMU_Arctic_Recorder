@@ -8,10 +8,11 @@ import copy
 import pyaudio
 import wave
 import os
+rows, columns = os.popen('stty size', 'r').read().split()
 from datetime import date
 
-THRESHOLD = 900  # audio levels not normalised.
-CHUNK_SIZE = 1024
+THRESHOLD = 1500  # audio levels not normalised.
+CHUNK_SIZE = 1024 * 2
 RATE = 44100
 SILENT_CHUNKS = 2 * RATE / 1024  # about 3sec
 FORMAT = pyaudio.paInt16
@@ -20,8 +21,37 @@ NORMALIZE_MINUS_ONE_dB = 10 ** (-1.0 / 20)
 CHANNELS = 2
 TRIM_APPEND = RATE / 4
 
+class CliChart(object):
+    DONE_ONE = False
+    def print10(self, sel):
+        if self.DONE_ONE:
+            print '\033[F' * 13
+        else:
+            self.DONE_ONE = True
+
+        height = 10
+        MAX = 4000
+        scaling_factor = MAX / height
+        output = ""
+        for i in range(height):
+            for j in sel:
+                if height - float(j)/float(scaling_factor) <= i:
+                    output += "*"
+                else:
+                    output += " "
+            output += "\n"
+        # for j in sel:
+            # output += str(int(float(j)/float(scaling_factor)))
+        output += "\n"
+        print output
+
+data_chunk_maxes = []
+clichart = CliChart()
+
 def is_silent(data_chunk):
     """Returns 'True' if below the 'silent' threshold"""
+    data_chunk_maxes.append(max(data_chunk))
+    clichart.print10(data_chunk_maxes[-10:])
     return max(data_chunk) < THRESHOLD
 
 def normalize(data_all):
@@ -118,5 +148,8 @@ if __name__ == '__main__':
     for idx, id in enumerate(sorted(lines)):
         outfile = os.path.join(data_dir, id + '.wav')
         if not os.path.exists(outfile):
-            print '[%s %s/%s]> %s' % (id, idx, len(lines), lines[id])
+            promptLine = '[%s %s/%s]> %s' % (id, idx, len(lines), lines[id])
+            print promptLine, ' ' * (int(columns) - len(promptLine) - 1)
             record_to_file(outfile)
+            print '\033[F' * 14
+            clichart.DONE_ONE = False
