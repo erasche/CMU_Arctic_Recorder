@@ -11,14 +11,14 @@ import os
 rows, columns = os.popen('stty size', 'r').read().split()
 from datetime import date
 
-THRESHOLD = 1500  # audio levels not normalised.
+THRESHOLD = 3000  # audio levels not normalised.
 CHUNK_SIZE = 1024 * 2
 RATE = 44100
-SILENT_CHUNKS = 2 * RATE / 1024  # about 3sec
+SILENT_CHUNKS = RATE / 1024  # about 1sec
 FORMAT = pyaudio.paInt16
 FRAME_MAX_VALUE = 2 ** 15 - 1
 NORMALIZE_MINUS_ONE_dB = 10 ** (-1.0 / 20)
-CHANNELS = 2
+CHANNELS = 1
 TRIM_APPEND = RATE / 4
 
 class CliChart(object):
@@ -30,7 +30,7 @@ class CliChart(object):
             self.DONE_ONE = True
 
         height = 10
-        MAX = 4000
+        MAX = 8000
         scaling_factor = MAX / height
         output = ""
         for i in range(height):
@@ -40,8 +40,6 @@ class CliChart(object):
                 else:
                     output += " "
             output += "\n"
-        # for j in sel:
-            # output += str(int(float(j)/float(scaling_factor)))
         output += "\n"
         print output
 
@@ -51,7 +49,7 @@ clichart = CliChart()
 def is_silent(data_chunk):
     """Returns 'True' if below the 'silent' threshold"""
     data_chunk_maxes.append(max(data_chunk))
-    clichart.print10(data_chunk_maxes[-10:])
+    clichart.print10(data_chunk_maxes[-80:])
     return max(data_chunk) < THRESHOLD
 
 def normalize(data_all):

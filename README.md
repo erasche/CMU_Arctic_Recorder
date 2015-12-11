@@ -1,6 +1,6 @@
 # CMU Arctic Recorder
 
-Ever needed to record a copy of [CMU Arctic](http://festvox.org/cmu_arctic/)? 
+Ever needed to record a copy of [CMU Arctic](http://festvox.org/cmu_arctic/)?
 Sure! Who hasn't, right? ... right? Anyway. For those us of working on our
 voices one way or another, here's a handy dandy script to prompt you for
 each of the thousand or so sentences in arctic, and store those to
@@ -10,17 +10,19 @@ Features a pleasant terminal prompt with cute ASCII art volume graph, since the
 recording automatically breaks on a pause longer than two seconds.
 
 ```console
-[arctic_a0019 18/1132]> I followed the line of the proposed railroad, looking for chances.
+(env)hxr@leda:~/projects/me/voice$ python record.py 2>/dev/null
+[arctic_a0470 469/1132]> He spat it out like so much venom.
+                *  **
+               **  **
+               **  **    *            *       *
+               **  **    *       *    *       **
+               *** *** * **      *    *       **
+               *** *** * **      *    *       **
+               *** *** * **      *  * ***     **
+               *** *** * ***     ** ******    ****
+               *** *** * ***     ********* *  ******
+               ***************   ********* ** ******
 
-
-
-
-*  *      
-****      
-*****     
-*******   
-*******   
-**********
 ```
 
 ## LICENSE
